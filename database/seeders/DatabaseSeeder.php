@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(\App\Modules\Admin\Database\Seeds\RoleSeeder::class);
 
         if (config('admin.fake_data_seeder')) {
-            $this->fakeDataSeeders();
+            //$this->fakeDataSeeders();
         }
     }
 
