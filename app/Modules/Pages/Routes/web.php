@@ -7,5 +7,4 @@ Route::namespace('Api\Client')->group(function(){
         Route::get('{module}','PageController@index')->name('index');
         Route::get('type','PageController@pageType');
     });
-
 });
