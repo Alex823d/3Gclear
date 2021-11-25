@@ -64,130 +64,16 @@ class LandingPageController extends Controller
     public function home(Request $request)
     {
         if (app()->getLocale()=="ge"){
-            return view("homePage_ge");
+
 
         }elseif (app()->getLocale()=="en"){
-            return view("homePage_en");
+
         }elseif (app()->getLocale()=="ru"){
-            return view("homePage_ru");
+
         }
     }
-    public function product(Request $request):Response
-    {
-
-        $page = Page::where('name', 'product')->first();
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
-
-        $brands = (new BrandData())->getBrands();
 
 
-        $allSeoData = SeoData::setTitle(__('seo.products.title'))
-            ->setDescription(__('seo.products.description'))
-            ->setKeywords(__('seo.products.description'))
-            ->setOgTitle(__('seo.products.title'))
-            ->setOgDescription(__('seo.products.description'))
-            ->getSeoData();
-
-
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        return Jetstream::inertia()->render($request, 'Landing/Product/Index', [
-            'page' => $pageData,
-            'active_route' => Route::currentRouteName(),
-            'brands' => $brands
-        ]);
-    }
-
-    public function brandView(Request $request, $slug) {
-        $brand = Brand::with([
-            'translations',
-            'images',
-        ])->with(['products' => function($query){
-            $query->with("images")->where('status', 1);
-        }])
-            ->active()
-            ->where('id', getIdFromSlug($slug))->firstOrFail();
-
-        $allSeoData = (new BrandItemResource($brand))->toSeoData();
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        $page = Page::where('name', 'brand')->first();
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
-
-//        dd((new BrandItemResource($brand))->toArrayForShow(),);
-
-        return Jetstream::inertia()->render($request, 'Landing/Brand/Index', [
-            'brand' => (new BrandItemResource($brand))->toArrayForShow(),
-//            'brand' => $brand,
-            'seo' => $allSeoData,
-            'page' => $pageData
-        ]);
-    }
-
-
-    public function productView(Request $request, $slug)
-    {
-
-        $product = Product::with([
-            'translations',
-            'images'
-        ])
-            ->active()
-            ->where('id', getIdFromSlug($slug))->firstOrFail();
-
-        $allSeoData = (new ProductItemResource($product))->toSeoData();
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        $page = Page::where('name', 'product')->first();
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
-
-//        dd((new ProductItemResource($product))->toArrayForShow());
-        return Jetstream::inertia()->render($request, 'Landing/Product/Show', [
-            'product' => array((new ProductItemResource($product))->toArrayForShow()),
-            'seo' => $allSeoData,
-            'page' => $pageData,
-            'goBack' => \route('product.index')
-        ]);
-    }
-
-
-    /**
-     * @param Request $request
-     *
-     * @return \Inertia\Response
-     */
-    public function about(Request $request): Response
-    {
-        $page = Page::where('name', 'about')->first();
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
-
-        $allSeoData = SeoData::setTitle(__('seo.about.title'))
-            ->setDescription(__('seo.about.description'))
-            ->setKeywords(__('seo.about.description'))
-            ->setOgTitle(__('seo.about.title'))
-            ->setOgDescription(__('seo.about.description'))
-            ->getSeoData();
-
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        return Jetstream::inertia()->render($request, 'Landing/About/Index',[
-            'page' => $pageData
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return \Inertia\Response
-     */
  /**
      * @param Request $request
      *
@@ -209,59 +95,7 @@ class LandingPageController extends Controller
         return Jetstream::inertia()->render($request, 'Landing/Contact/Index');
     }
 
-    public function news(Request $request): Response
-    {
-        $page = Page::where('name', 'blog')->first();
-//        dd($page);
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
 
-        $news = (new BlogData())->getBlogs();
-//        dd($news);
-
-
-        $allSeoData = SeoData::setTitle(__('seo.news.title'))
-            ->setDescription(__('seo.news.description'))
-            ->setKeywords(__('seo.news.description'))
-            ->setOgTitle(__('seo.news.title'))
-            ->setOgDescription(__('seo.news.description'))
-            ->getSeoData();
-
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        return Jetstream::inertia()->render($request, 'Landing/News/Index', [
-            'page' => $pageData,
-            'active_route' => Route::currentRouteName(),
-            'news' => $news
-        ]);
-    }
-
-    public function newsView(Request $request, $slug)
-    {
-        $news = Blog::with([
-            'translations',
-            'images'
-        ])
-            ->active()
-            ->where('id', getIdFromSlug($slug))->firstOrFail();
-
-        $allSeoData = (new BlogItemResource($news))->toSeoData();
-        View::composer('app', function ($view) use ($allSeoData) {
-            $view->with('allSeoData', $allSeoData);
-        });
-
-        $page = Page::where('name', 'blog')->first();
-        $pageData = $page ? (new PageMetaInfoResource($page->meta))->toArray($request) : [];
-//        dd($news["relations"]);
-//        dd((new ProductItemResource($product))->toArrayForShow());
-        return Jetstream::inertia()->render($request, 'Landing/News/Show', [
-            'news' => array((new BlogItemResource($news))->toArrayForShow()),
-            'seo' => $allSeoData,
-            'page' => $pageData,
-            'goBack' => \route('news.index')
-        ]);
-    }
 
     public function mail(Request $request)
     {

@@ -26,45 +26,9 @@ Route::get('language/{language}', function ($language) {
 Route::post('/mail', [LandingPageController::class, 'mail']);
 Route::group(['middleware' => config('fortify.middleware', ['web'])], function () {
     Route::get('',[LandingPageController::class,'home'])->name('home.index');
-    Route::get('about',[LandingPageController::class,'about'])->name('about.index');
+
     Route::get('contact',[LandingPageController::class,'contact'])->name('contact.index');
-//    Route::get('news',[LandingPageController::class,'news'])->name('news.index');
-//    Route::get('products',[LandingPageController::class,'products'])->name('products.index');
-//    Route::get('show_news',[LandingPageController::class,'show_news'])->name('show_news.index');
-//    Route::get('show_products',[LandingPageController::class,'show_products'])->name('show_products.index');
-    Route::prefix('brand')->group(function () {
-        Route::get('',[LandingPageController::class, 'brand'])->name('brand.index');
-        Route::get('{slug}',[LandingPageController::class, 'brandView'])->name('brand.show');
-    });
-    Route::prefix('product')->group(function () {
-        Route::get('',[LandingPageController::class, 'product'])->name('product.index');
-        Route::get('{slug}',[LandingPageController::class, 'productView'])->name('product.show');
-    });
 
-    Route::prefix('news')->group(function () {
-        Route::get('',[LandingPageController::class, 'news'])->name('news.index');
-        Route::get('{slug}',[LandingPageController::class, 'newsView'])->name('news.show');
-    });
-    Route::prefix('blog')->group(function () {
-//        Route::get('',[LandingPageController::class, 'blog'])->name('blog.index');
-        Route::get('{slug}',[LandingPageController::class, 'blogView'])->name('blog.show');
-    });
 
-    Route::prefix('project')->group(function () {
-        Route::get('',[LandingPageController::class, 'project'])->name('project.index');
-        Route::get('{slug}',[LandingPageController::class, 'projectView'])->name('project.show');
-    });
-
-    Route::prefix('service')->group(function () {
-        Route::get('',[LandingPageController::class, 'service'])->name('service.index');
-        Route::get('{slug}',[LandingPageController::class, 'serviceView'])->name('service.show');
-    });
-
-    Route::prefix('team')->group(function () {
-        Route::get('',[LandingPageController::class, 'team'])->name('team.index');
-        Route::get('{slug}',[LandingPageController::class, 'teamView'])->name('team.show');
-    });
-
-    Route::get('about-us',[LandingPageController::class, 'about'])->name('about.index');
 
 });
