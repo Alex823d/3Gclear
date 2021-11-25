@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <g id="Group_173" data-name="Group 173" transform="translate(-115 -128)">
-    <g id="Rectangle_92" data-name="Rectangle 92" transform="translate(115 128)" fill="#4d4d4d" stroke="#707070" stroke-width="1" opacity="0">
-      <rect width="24" height="24" stroke="none"/>
-      <rect x="0.5" y="0.5" width="23" height="23" fill="none"/>
-    </g>
-    <path id="Icon_ionic-logo-youtube" data-name="Icon ionic-logo-youtube" d="M17.94,5.241a2.742,2.742,0,0,0-2.61-2.864c-1.954-.092-3.947-.127-5.982-.127H8.712c-2.032,0-4.028.035-5.982.127A2.748,2.748,0,0,0,.123,5.248C.035,6.5,0,7.76,0,9.015s.035,2.511.12,3.771a2.751,2.751,0,0,0,2.607,2.875c2.053.1,4.159.138,6.3.134s4.243-.035,6.3-.134a2.752,2.752,0,0,0,2.61-2.875c.085-1.259.123-2.515.12-3.774S18.024,6.5,17.94,5.241ZM7.3,12.476V5.544l5.115,3.464Z" transform="translate(118.01 130.767)" fill="#4d4d4d"/>
-  </g>
-</svg>
