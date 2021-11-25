@@ -2,19 +2,7 @@
 
 namespace App\Models;
 
-use App\Modules\Company\Http\Resources\CompanyEmployee\UserEmployeeTypeOptions;
-use App\Modules\Company\Models\Company;
-use App\Modules\Company\Models\CompanyEmployee;
-use App\Modules\Company\Models\CompanyMember;
-use App\Modules\Company\Models\UserEmployeeConnection;
-use App\Modules\Customer\Auth\Interfaces\MustVerifyPhone;
-use App\Modules\Customer\Models\Activity;
-use App\Modules\Customer\Models\DoctorType;
-use App\Modules\Event\Contracts\EventConnectionAble;
-use App\Modules\Event\Http\Resources\Session\SessionItemResource;
-use App\Modules\Event\Models\Event;
-use App\Modules\Event\Models\EventSession;
-use App\Modules\Review\Models\Review;
+
 use Arr;
 use Database\Factories\ActivityFactory;
 use Database\Factories\CustomerFactory;
@@ -96,7 +84,7 @@ class User extends Authenticatable implements MustVerifyPhone, EventConnectionAb
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-    use \App\Modules\Customer\Auth\Traits\MustVerifyPhone;
+    
 
     /**
      * Status list.
@@ -152,39 +140,10 @@ class User extends Authenticatable implements MustVerifyPhone, EventConnectionAb
         'full_name'
     ];
 
-    protected static function booted()
-    {
-        static::created(function (User $user) {
-            $user->userEmployeeConnection()->create(['type' => UserEmployeeTypeOptions::TYPE_USER]);
-        });
-
-        static::updated(function (User $user) {
-            if (!$user->userEmployeeConnection) {
-                $user->userEmployeeConnection()->create(['type' => UserEmployeeTypeOptions::TYPE_USER]);
-            }
-        });
-    }
-
-    public function review()
-    {
-        return $this->hasMany(Review::class, 'user_id', 'id');
-    }
-
-    /**
-     * @return MorphOne
-     */
-    public function userEmployeeConnection(): MorphOne
-    {
-        return $this->morphOne(UserEmployeeConnection::class, 'morphable');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function ownCompanies()
-    {
-        return $this->hasMany(CompanyMember::class)->where('role', CompanyMember::ROLE_OWNER);
-    }
+    
+    
+    
+    
 
     /**
      * @return string
@@ -256,44 +215,7 @@ class User extends Authenticatable implements MustVerifyPhone, EventConnectionAb
             : $this->defaultProfilePhotoUrl();
     }
 
-    /**
-     * @return HasManyThrough
-     */
-    public function companies(): HasManyThrough
-    {
-        return $this->hasManyThrough(Company::class, CompanyMember::class, 'user_id', 'id', 'id', 'company_id');
-    }
+    
 
-    /**
-     * @param null $event
-     * @return array
-     */
-    public function trainings($event = null)
-    {
-        $employeeIds = $this->companies ? $this->companies->map(function (Company $company) {
-            return $company->employees ? $company->employees->pluck('id')->toArray() : [];
-        }) : [];
-
-        $employeeIds = array_unique(Arr::flatten((array)$employeeIds));
-
-
-        $userEmployeeConnections = UserEmployeeConnection::whereIn('morphable_id', $employeeIds)->where('morphable_type', CompanyEmployee::class)->pluck('id')->toArray();
-        $userEmployeeConnections [] = $this->userEmployeeConnection->id;
-        $eventSessions = EventSession::query();
-        if ($event) {
-            $eventSessions = $eventSessions->where('event_id', $event->id);
-        }
-
-        $eventSessions = $eventSessions->whereHas('attendees', function ($query) use ($userEmployeeConnections) {
-            $query->whereIn('person_con_id', $userEmployeeConnections);
-        })->event()->orderBy('start_date','desc');
-
-        $eventSessions = $eventSessions->get();
-
-
-        return empty($eventSessions) ? []
-            : $eventSessions->map(function ($eventSession) use ($employeeIds) {
-                return (new SessionItemResource($eventSession))->toProfile($employeeIds);
-            });
-    }
+   
 }
